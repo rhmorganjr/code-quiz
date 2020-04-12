@@ -1,8 +1,9 @@
-let question = document.querySelector(".main-title");
-let answers  = document.querySelector(".main-context");
-let submitAnswer = document.querySelector(".main-action");
-let mainWrapper = document.getElementById("main-wrapper");
+let mainTitle = document.querySelector('.main-title');
+let mainContext  = document.querySelector('.main-context');
+let mainAction = document.querySelector('.main-action');
+let mainWrapper = document.getElementById('main-wrapper');
 let footer = document.querySelector('.footer');
+let timer = document.getElementById('timer');
 
 // questions
 let questions = [
@@ -45,13 +46,15 @@ let questions = [
 let quizLength = questions.length;
 let currentQuestion = 0;
 let numberRightAnswers = 0;
+let timeLeft = 0;
+let clock;
 
 function displayQuestion(index) {
-  question.textContent = questions[index].q;
+  clearMain();
+  // display question
+  mainTitle.textContent = questions[index].q;
 
   // display multiple choices
-  //let possAnws = document.getElementById("possible-answers");
-  answers.textContent = "";
   let choices = questions[index].c;
 
   for (let i = 0; i < choices.length; i++) {
@@ -62,33 +65,31 @@ function displayQuestion(index) {
     ckBox.setAttribute('id', ckBox);
     ckBox.setAttribute('name', 'answers');
     ckBox.setAttribute('value', text);
-    answers.appendChild(ckBox);
+    mainContext.appendChild(ckBox);
 
     let ckLbl = 'ckLbl' + i;
     ckLbl = document.createElement('label');
     ckLbl.setAttribute('for', ckBox);
     ckLbl.textContent = '\t'+text;
-    answers.appendChild(ckLbl);
-
-
-
-    answers.appendChild(document.createElement('br'));
+    mainContext.appendChild(ckLbl);
+    // todo
+    mainContext.appendChild(document.createElement('br'));
   }
-  submitAnswer.textContent = "";
+
   let submitBtn = document.createElement('button');
   submitBtn.addEventListener("click", function() {
     event.preventDefault();
 
     gradeCurrentAnswer(currentQuestion);
     if (currentQuestion === quizLength-1) {
-      endOfQuiz();
+      endOfQuiz(timeLeft);
     }
     else {
       displayQuestion(++currentQuestion);
     }
   });
   submitBtn.textContent = "Submit";
-  submitAnswer.appendChild(submitBtn);
+  mainAction.appendChild(submitBtn);
 
 }
 
@@ -100,6 +101,10 @@ function displayCorrectness(correct) {
   }
   else {
     display.textContent = "Wrong!";
+    timeLeft -= 10;
+    if ( timeLeft <= 0) {
+      endOfQuiz(0);
+    }
   }
 
   footer.appendChild(display);
@@ -119,52 +124,90 @@ function gradeCurrentAnswer(index) {
   displayCorrectness(correct);
 }
 
-function endOfQuiz() {
-  question.textContent = "";
+function displayHighscores() {
+  clearMain();
+  mainTitle.textContent = "Highscores";
+
+  let list = document.createElement('ol');
+  mainContext.appendChild(list);
+
+}
+
+function endOfQuiz(score) {
+  clearInterval(clock);
+  clearMain();
+  timer.textContent = "Time: 0";
+  //const score = timeLeft;
   let title = document.createElement('h3');
   title.textContent = "All Done!";
-  question.appendChild(title);
+  mainTitle.appendChild(title);
 
-  answers.textContent = "";
+  
   let results = document.createElement('p');
-  results.textContent = "Your final score is 10";
-  answers.appendChild(results);
+  results.textContent = "Your final score is "+score;
+  mainContext.appendChild(results);
+  let addInitials = document.createElement('input');
+  addInitials.setAttribute('type', 'text');
+  addInitials.setAttribute('id', 'initials');
+  addInitials.setAttribute('placeholder', 'Enter Initials');
+  mainContext.appendChild(addInitials);
 
-  submitAnswer.textContent = "";
+  
   let submitBtn = document.createElement('button');
   submitBtn.addEventListener("click", function() {
     event.preventDefault();
-    //go to first page
-    displayFirstPage();
+    //go to Highscores
+    displayHighscores();
   });
   submitBtn.textContent = "Submit";
-  submitAnswer.appendChild(submitBtn);
+  mainContext.appendChild(submitBtn);
   // get initials
 
 }
 
 // @TODO - function to clear all 3 sections
+function clearMain() {
+  mainTitle.textContent = "";
+  mainContext.textContent = "";
+  mainAction.textContent = "";
+}
+
+function setupTimer() {
+  clock = setInterval(function () {
+    timer.textContent = "Time: "+ timeLeft--;
+    if (timeLeft === 0) {
+      endOfQuiz(timeLeft);
+    }
+    //timeLeft--;
+  }, 1000);
+
+}
+
 
 function displayFirstPage() {
+  clearMain();
   let title = document.createElement('h3');
   title.textContent = "Coding Quiz Challenge";
-  question.appendChild(title);
+  mainTitle.appendChild(title);
 
   let instructions = document.createElement('p');
   instructions.textContent = "Try to answer the following code-related questions within the time limit."+
     " Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
-  answers.appendChild(instructions);
+  mainContext.appendChild(instructions);
 
   let startQuiz = document.createElement('button');
   startQuiz.addEventListener("click", function() {
     event.preventDefault();
+
     displayQuestion(currentQuestion);
+    setupTimer();
   });
   startQuiz.textContent = "Start Quiz";
-  submitAnswer.appendChild(startQuiz);
+  mainAction.appendChild(startQuiz);
 }
 
 function startQuiz() {
+  timeLeft = 30;
   displayFirstPage();
 }
 
