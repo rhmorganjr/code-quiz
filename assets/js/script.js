@@ -1,8 +1,7 @@
-let question = document.getElementById("question");
-let answers  = document.getElementById("possible-answers");
-let submitAnswer = document.getElementById("submit-answer");
+let question = document.querySelector(".main-title");
+let answers  = document.querySelector(".main-context");
+let submitAnswer = document.querySelector(".main-action");
 let mainWrapper = document.getElementById("main-wrapper");
-//let mainDiv = document.querySelector('.main');
 let footer = document.querySelector('.footer');
 
 // questions
@@ -48,17 +47,16 @@ let currentQuestion = 0;
 let numberRightAnswers = 0;
 
 function displayQuestion(index) {
-  //mainWrapper.textContent = "";
   question.textContent = questions[index].q;
 
   // display multiple choices
-  let possAnws = document.getElementById("possible-answers");
-  possAnws.textContent = "";
-  let possibleAnswers = questions[index].c;
+  //let possAnws = document.getElementById("possible-answers");
+  answers.textContent = "";
+  let choices = questions[index].c;
 
-  for (let i = 0; i < possibleAnswers.length; i++) {
+  for (let i = 0; i < choices.length; i++) {
     let ckBox = 'ckBox' + i;
-    let text = possibleAnswers[i];
+    let text = choices[i];
     ckBox = document.createElement('input');
     ckBox.setAttribute('type', 'radio');
     ckBox.setAttribute('id', ckBox);
@@ -72,8 +70,26 @@ function displayQuestion(index) {
     ckLbl.textContent = '\t'+text;
     answers.appendChild(ckLbl);
 
+
+
     answers.appendChild(document.createElement('br'));
   }
+  submitAnswer.textContent = "";
+  let submitBtn = document.createElement('button');
+  submitBtn.addEventListener("click", function() {
+    event.preventDefault();
+
+    gradeCurrentAnswer(currentQuestion);
+    if (currentQuestion === quizLength-1) {
+      endOfQuiz();
+    }
+    else {
+      displayQuestion(++currentQuestion);
+    }
+  });
+  submitBtn.textContent = "Submit";
+  submitAnswer.appendChild(submitBtn);
+
 }
 
 function displayCorrectness(correct) {
@@ -104,28 +120,30 @@ function gradeCurrentAnswer(index) {
 }
 
 function endOfQuiz() {
-  mainWrapper.textContent = null;
+  question.textContent = "";
+  let title = document.createElement('h3');
+  title.textContent = "All Done!";
+  question.appendChild(title);
 
+  answers.textContent = "";
   let results = document.createElement('p');
-  results.textContent = "You got " + numberRightAnswers + " out of " + quizLength + " right!";
-  mainWrapper.appendChild(results);
+  results.textContent = "Your final score is 10";
+  answers.appendChild(results);
 
+  submitAnswer.textContent = "";
+  let submitBtn = document.createElement('button');
+  submitBtn.addEventListener("click", function() {
+    event.preventDefault();
+    //go to first page
+    displayFirstPage();
+  });
+  submitBtn.textContent = "Submit";
+  submitAnswer.appendChild(submitBtn);
   // get initials
 
 }
 
-
-submitAnswer.addEventListener("click", function() {
-  event.preventDefault();
-
-  gradeCurrentAnswer(currentQuestion);
-  if (currentQuestion === quizLength-1) {
-    endOfQuiz();
-  }
-  else {
-    displayQuestion(++currentQuestion);
-  }
-});
+// @TODO - function to clear all 3 sections
 
 function displayFirstPage() {
   let title = document.createElement('h3');
@@ -134,18 +152,20 @@ function displayFirstPage() {
 
   let instructions = document.createElement('p');
   instructions.textContent = "Try to answer the following code-related questions within the time limit."+
-    "Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
+    " Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
   answers.appendChild(instructions);
 
   let startQuiz = document.createElement('button');
+  startQuiz.addEventListener("click", function() {
+    event.preventDefault();
+    displayQuestion(currentQuestion);
+  });
   startQuiz.textContent = "Start Quiz";
   submitAnswer.appendChild(startQuiz);
 }
 
 function startQuiz() {
   displayFirstPage();
-
-  //displayQuestion(0);
 }
 
 

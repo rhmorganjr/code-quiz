@@ -31,3 +31,10 @@
 .timer {
   float: right;
 }
+
+.footer {
+  border-top-style: solid;
+  border-top-width: 3px; 
+  border-top-color: black;
+  border-top-width: 80%;
+}
