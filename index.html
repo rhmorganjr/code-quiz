@@ -8,30 +8,29 @@
   <title>Code Quiz</title>
 </head>
 <body>
-  <header>
+  <form class="main-form">
+    <header class="header">
     <div>
       <button id="high-score">View High Scores</button>
       <div class="timer">
         <label for="countdown">Time:</label>
         <input type="text" name="countdown" readonly />
       </div>
-      <br/><br/>
+    </div>
+  </header>
+
+  <main class="main">
       <div class="question-answers">
         <h3 id="question"></h3>
         <div id="possible-answers"></div>
       </div>
-    </div>
-  </header>
-
-  <main>
-    <form>
-
-    </form>
+      <button id="submit-answer">Submit</button>
   </main>
 
   <footer>
 
   </footer>
-  <script src = "./assets/js/script.js"></script>
+</form>
+<script src = "./assets/js/script.js"></script>
 </body>
 </html>

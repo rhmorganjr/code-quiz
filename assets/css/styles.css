@@ -4,6 +4,19 @@
   float: left;
 }
 
+.header {
+  height: 5%;
+}
+
+
+.main-form {
+  display: block;
+}
+
+.main {
+  margin: 50px;
+}
+
 .question-answers {
   display: block;
   background-color: rgb(175, 235, 168);
