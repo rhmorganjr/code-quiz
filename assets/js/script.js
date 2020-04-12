@@ -1,7 +1,9 @@
 let question = document.getElementById("question");
 let answers  = document.getElementById("possible-answers");
 let submitAnswer = document.getElementById("submit-answer");
-let questionAnswers = document.getElementById("question-answers");
+let mainWrapper = document.getElementById("main-wrapper");
+//let mainDiv = document.querySelector('.main');
+let footer = document.querySelector('.footer');
 
 // questions
 let questions = [
@@ -18,23 +20,35 @@ let questions = [
     ]
   },
   { q: "Using _______ statement is how you test for a specific condition.",
-  a: "if",
-  c: ["select", 
-    "if", 
-    "switch",
-    "for"
-  ]
-}
-
+    a: "if",
+    c: ["select", 
+      "if", 
+      "switch",
+      "for"
+    ]
+  },
+  { q: "Is it possible to nest functions in JavaScript?",
+    a: "True",
+    c: ["True", 
+      "False" 
+    ]
+  },
+  { q: "Which of the following function of String object returns the characters in a string between two indexes into the string?",
+    a: "substring()",
+    c: ["slice()", 
+      "split()",
+      "substr()",
+      "substring()" 
+    ]
+  }
 ];
 
-console.log(questions);
 let quizLength = questions.length;
-console.log("# ? = "+quizLength);
 let currentQuestion = 0;
 let numberRightAnswers = 0;
 
 function displayQuestion(index) {
+  //mainWrapper.textContent = "";
   question.textContent = questions[index].q;
 
   // display multiple choices
@@ -45,7 +59,6 @@ function displayQuestion(index) {
   for (let i = 0; i < possibleAnswers.length; i++) {
     let ckBox = 'ckBox' + i;
     let text = possibleAnswers[i];
-    console.log(text.toString());
     ckBox = document.createElement('input');
     ckBox.setAttribute('type', 'radio');
     ckBox.setAttribute('id', ckBox);
@@ -63,34 +76,49 @@ function displayQuestion(index) {
   }
 }
 
-function gradeCurrentAnswer(value, index) {
+function displayCorrectness(correct) {
+  footer.textContent = null;
+  let display = document.createElement('p');
+  if (correct) {
+    display.textContent = "Correct!";
+  }
+  else {
+    display.textContent = "Wrong!";
+  }
+
+  footer.appendChild(display);
+}
+
+function gradeCurrentAnswer(index) {
   let answer = questions[index].a;
   let ele = document.getElementsByName('answers');
-  let i = 0;
-  for ( ; i < ele.length; i++) {
+  let correct = false;
+  for ( let i = 0; i < ele.length; i++) {
     if (ele[i].checked && answer === ele[i].value) {
       numberRightAnswers++;
+      correct = true;
       break;
     }
   }
+  displayCorrectness(correct);
 }
 
 function endOfQuiz() {
-  alert("# right = " + numberRightAnswers);
-  let mainDiv = document.querySelector('.main');
-  mainDiv.textContent = null;
+  mainWrapper.textContent = null;
 
   let results = document.createElement('p');
   results.textContent = "You got " + numberRightAnswers + " out of " + quizLength + " right!";
-  mainDiv.appendChild(results);
+  mainWrapper.appendChild(results);
+
+  // get initials
+
 }
 
 
 submitAnswer.addEventListener("click", function() {
   event.preventDefault();
-  gradeCurrentAnswer(event.returnValue, currentQuestion);
-  console.log("currentQuestion = "+currentQuestion);
-  console.log("quizLength = "+quizLength);
+
+  gradeCurrentAnswer(currentQuestion);
   if (currentQuestion === quizLength-1) {
     endOfQuiz();
   }
@@ -99,10 +127,27 @@ submitAnswer.addEventListener("click", function() {
   }
 });
 
-function displayQuiz() {
-  displayQuestion(0);
+function displayFirstPage() {
+  let title = document.createElement('h3');
+  title.textContent = "Coding Quiz Challenge";
+  question.appendChild(title);
+
+  let instructions = document.createElement('p');
+  instructions.textContent = "Try to answer the following code-related questions within the time limit."+
+    "Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
+  answers.appendChild(instructions);
+
+  let startQuiz = document.createElement('button');
+  startQuiz.textContent = "Start Quiz";
+  submitAnswer.appendChild(startQuiz);
+}
+
+function startQuiz() {
+  displayFirstPage();
+
+  //displayQuestion(0);
 }
 
 
-displayQuiz();
+startQuiz();
 
