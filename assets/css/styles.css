@@ -3,6 +3,11 @@ body {
   background-color: beige;
 }
 
+button {
+  background-color: blueviolet;
+  color: white;
+}
+
 #high-score {
   float: left;
 }
@@ -23,19 +28,12 @@ body {
   border-bottom-color: gray;
 }
 
+.main-content {
+  display: block;
+}
+
 .main-action {
   margin: 0 0 10px 0;
-}
-
-.question-answers {
-  display: block;
-  background-color: rgb(175, 235, 168);
-  width: 60%;
-  margin: 0 auto;
-}
-
-#possible-answers {
-  display: block;
 }
 
 .countdown {

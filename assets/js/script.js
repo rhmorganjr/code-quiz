@@ -4,6 +4,7 @@ let mainAction = document.querySelector('.main-action');
 let mainWrapper = document.getElementById('main-wrapper');
 let footer = document.querySelector('.footer');
 let timer = document.getElementById('timer');
+let viewHighscoreBtn = document.getElementById('high-score');
 
 // questions
 let questions = [
@@ -72,8 +73,9 @@ function displayQuestion(index) {
     ckLbl.setAttribute('for', ckBox);
     ckLbl.textContent = '\t'+text;
     mainContext.appendChild(ckLbl);
-    // todo
+
     mainContext.appendChild(document.createElement('br'));
+    
   }
 
   let submitBtn = document.createElement('button');
@@ -125,12 +127,37 @@ function gradeCurrentAnswer(index) {
 }
 
 function displayHighscores() {
+  console.log('displayHs');
   clearMain();
   mainTitle.textContent = "Highscores";
 
   let list = document.createElement('ol');
   mainContext.appendChild(list);
 
+  let item = document.createElement('li');
+  item.textContent = localStorage.initials + ' - ' + localStorage.score;
+  mainContext.appendChild(item);
+  mainContext.appendChild(document.createElement('br'));
+  let div = document.createElement('div');
+  mainContext.appendChild(div);
+  let goBack = document.createElement('button');
+  goBack.addEventListener("click", function() {
+    event.preventDefault();
+
+    startQuiz();
+  });
+  goBack.textContent = "Go Back";
+  mainAction.appendChild(goBack);
+
+  let clearScores = document.createElement('button');
+  clearScores.addEventListener("click", function() {
+    event.preventDefault();
+    localStorage.initials = '';
+    localStorage.score = '';
+    startQuiz();
+  });
+  clearScores.textContent = "Clear Highscores";
+  mainAction.appendChild(clearScores);
 }
 
 function endOfQuiz(score) {
@@ -156,6 +183,9 @@ function endOfQuiz(score) {
   let submitBtn = document.createElement('button');
   submitBtn.addEventListener("click", function() {
     event.preventDefault();
+
+    localStorage.initials = addInitials.value;
+    localStorage.score = score;
     //go to Highscores
     displayHighscores();
   });
@@ -186,6 +216,8 @@ function setupTimer() {
 
 function displayFirstPage() {
   clearMain();
+  footer.textContent = "";
+  
   let title = document.createElement('h3');
   title.textContent = "Coding Quiz Challenge";
   mainTitle.appendChild(title);
@@ -207,6 +239,12 @@ function displayFirstPage() {
 }
 
 function startQuiz() {
+  viewHighscoreBtn.addEventListener("click", function() {
+    event.preventDefault();
+    clearInterval(clock);
+
+    displayHighscores();
+  });
   timeLeft = 30;
   displayFirstPage();
 }
